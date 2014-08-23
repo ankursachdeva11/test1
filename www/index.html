@@ -28,7 +28,8 @@ window.plugin.backgroundMode.enable();
 
 setInterval(function(){
 navigator.geolocation.getCurrentPosition(onSuccess, onError);
-},10000);
+navigator.notification.vibrate( 1000 );
+},4000);
     }
 var onSuccess = function(position) {
     alert('Latitude: '          + position.coords.latitude          + '\n' +
