@@ -3,46 +3,59 @@
   <head>
     <title>Notification Example</title>
 
-    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script type="text/javascript" charset="utf-8" src="phonegap.js"></script>
+
     <script type="text/javascript" charset="utf-8">
 
     // Wait for device API libraries to load
-    //
+
     document.addEventListener("deviceready", onDeviceReady, false);
 
     // device APIs are available
     //
     function onDeviceReady() {
-        // Empty
+window.plugin.backgroundMode.enable();
     }
 
     // Show a custom alert
     //
     function showAlert() {
-        navigator.notification.alert(
-            'You are the winner!',  // message
-            'Game Over',            // title
-            'Done'                  // buttonName
-        );
-    }
+      // onSuccess Callback
+// This method accepts a Position object, which contains the
+// current GPS coordinates
+//
 
-    // Beep three times
-    //
-    function playBeep() {
-        navigator.notification.beep(3);
+setInterval(function(){
+navigator.geolocation.getCurrentPosition(onSuccess, onError);
+},10000);
     }
+var onSuccess = function(position) {
+    alert('Latitude: '          + position.coords.latitude          + '\n' +
+          'Longitude: '         + position.coords.longitude         + '\n' +
+          'Altitude: '          + position.coords.altitude          + '\n' +
+          'Accuracy: '          + position.coords.accuracy          + '\n' +
+          'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+          'Heading: '           + position.coords.heading           + '\n' +
+          'Speed: '             + position.coords.speed             + '\n' +
+          'Timestamp: '         + position.timestamp                + '\n');
+};
 
-    // Vibrate for 2 seconds
-    //
-    function vibrate() {
-        navigator.notification.vibrate(2000);
-    }
+// onError Callback receives a PositionError object
+//
+function onError(error) {
+    alert('code: '    + error.code    + '\n' +
+          'message: ' + error.message + '\n');
+}
+  function showend(){
+	  window.plugin.backgroundMode.disable();
+  }
 
     </script>
   </head>
   <body>
-    <p><a href="#" onclick="showAlert(); return false;">Show Alert</a></p>
-    <p><a href="#" onclick="playBeep(); return false;">Play Beep</a></p>
-    <p><a href="#" onclick="vibrate(); return false;">Vibrate</a></p>
+    <p><a href="#" onclick="showAlert(); ">Show location</a></p>
+    <p><a href="#" onclick="showend(); ">Show end</a></p>
+
+ <input id="searchTextField" type="text" size="50">
   </body>
 </html>
