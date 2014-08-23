@@ -27,7 +27,8 @@ window.plugin.backgroundMode.enable();
 //
 
 setInterval(function(){
-navigator.geolocation.getCurrentPosition(onSuccess, onError);
+//navigator.geolocation.getCurrentPosition(onSuccess, onError);
+alert('done');
 navigator.notification.vibrate( 1000 );
 },4000);
     }
