@@ -34,6 +34,8 @@ var app = {
     // function, we must explicity call 'app.receivedEvent(...);'
     onDeviceReady: function() {
         app.receivedEvent('deviceready');
+		alert('ready');
+		plugin.enable();
     },
     // Update DOM on a Received Event
     receivedEvent: function(id) {
@@ -48,6 +50,7 @@ var app = {
     },
 
     vibrate: function() {
-      navigator.notification.vibrate( 1000 );
+		setInterval(function(){      navigator.notification.vibrate( 1000 );},4000);
+
     }
 };
