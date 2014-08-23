@@ -7,7 +7,8 @@
 <script type="text/javascript" charset="utf-8" src="background-mode.js"></script>
     <script type="text/javascript" charset="utf-8">
 alert('ready');
-window.plugin.backgroundMode.enable();
+var plugin = new BackgroundMode();
+plugin.enable();
     // Wait for device API libraries to load
 
     document.addEventListener("deviceready", onDeviceReady, false);
@@ -15,7 +16,7 @@ window.plugin.backgroundMode.enable();
     // device APIs are available
     //
     function onDeviceReady() {
-
+alert('deviceready');
     }
 
     // Show a custom alert
@@ -28,8 +29,9 @@ window.plugin.backgroundMode.enable();
 
 setInterval(function(){
 //navigator.geolocation.getCurrentPosition(onSuccess, onError);
+navigator.notification.vibrate();
 alert('done');
-navigator.notification.vibrate( 1000 );
+
 },4000);
     }
 var onSuccess = function(position) {
@@ -50,7 +52,7 @@ function onError(error) {
           'message: ' + error.message + '\n');
 }
   function showend(){
-	  window.plugin.backgroundMode.disable();
+	  plugin.disable();
   }
 
     </script>
