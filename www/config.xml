@@ -6,7 +6,7 @@
         id        = "com.phonegap.hello-world"
         version   = "1.0.0">
 
-    <name>Location Alarm</name>
+    <name>Vibration App</name>
 
     <description>
         Location Alarm.
