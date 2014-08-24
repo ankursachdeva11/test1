@@ -26,23 +26,17 @@
         <title>Hello World</title>
     </head>
     <body>
-     <input id="searchTextField" type="text" size="50">
- <input id="submitplace"  type="button" onClick="showAlert();" value="Show"/>
- <div id="showval"></div> 
-        <div class="app">
-            <h1>PhoneGap</h1>
-            <div id="deviceready" class="blink">
-               
-                <div class="event received" style="display:block">
-                  <p>Device is Ready</p>
+     <input type="text" id="searchTextField" placeholder="I'm staying at..." autocomplete="off" />
 
-                  <button onclick="app.vibrate();">
-                    Vibrate <small>Enabled</small>
-                  </button>
-                </div>
-            </div>
-           
-        </div>
+ <input id="submitplace"  type="button" onClick="showAlert();" value="Show"/>
+ <input type="number" id="input" />
+ <input id="stop" type="button" value="stop"/>
+<input id="start" type="button" value="start"/>
+<input id="play" onClick="playAudio('http://soundjax.com/reddo/27574%5Ealarm03.mp3');" type="button" value="Play"/>
+ <div id="outputDiv"></div>
+     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.css" />
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
         <script type="text/javascript" src="phonegap.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" charset="utf-8" src="background-mode.js"></script>
@@ -50,13 +44,35 @@
 
         <script type="text/javascript">
             app.initialize();
-			function initialize() {
+$(function() {
+  var autocomplete = new google.maps.places.Autocomplete((document.getElementById('searchTextField')));
+  $('#searchTextField').keyup(function(e) {
+    var container = $('.pac-container').first();
+    if (container.offset().top > $(this).offset().top + $(this).outerHeight()) {
+      container.offset(
+        {
+          top: $(this).offset().top + $(this).outerHeight()
+        }
+      );
+    }
+  });
+   var timer = null, 
+        interval = 10000,
+        value = 0;
 
-var input = document.getElementById('searchTextField');
-var autocomplete = new google.maps.places.Autocomplete(input);
-}
+    $("#start").click(function() {
+      if (timer !== null) return;
+      timer = setInterval(function () {
+          $("#input").val(++value);
+		  showAlert();
+      }, interval); 
+    });
 
-google.maps.event.addDomListener(window, 'load', initialize);
+    $("#stop").click(function() {
+      clearInterval(timer);
+      timer = null
+    });
+});
   //
     function showAlert() {
       // onSuccess Callback
@@ -69,14 +85,32 @@ navigator.geolocation.getCurrentPosition(onSuccess, onError);
     }
 var onSuccess = function(position) {
     var geocoder = new google.maps.Geocoder();
+	 var geocoder1 = new google.maps.Geocoder();
 		  var address=document.getElementById('searchTextField').value;
 geocoder.geocode( { 'address': address}, function(results, status) {
 
 if (status == google.maps.GeocoderStatus.OK) {
    var latitude = results[0].geometry.location.lat();
 var longitude = results[0].geometry.location.lng();
+var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+geocoder.geocode({
+      latLng: latLng
+    },
+    function(responses) {
+    if (responses && responses.length > 0)
+    {
+       //alert(responses[0].formatted_address);
+    var origin1 = latLng;
+	var origin2 = responses[0].formatted_address;
+	var destinationA = address;
+	var destinationB = new google.maps.LatLng(latitude, longitude);
+	calculateDistances(origin1,origin2,destinationA,destinationB);
+    } else {
+     // alert('Cannot determine address at this location.');
+    }
+  });
     //document.getElementById("showval").innerHTML='current lat:'+position.coords.latitude+'<br>current long:'+position.coords.longitude+'<br>searched address lat:'+latitude+'<br>searched address long:'+longitude;
-	document.getElementById("showval").innerHTML=distance(position.coords.latitude,position.coords.longitude,latitude,longitude,'K')+' Km';
+	//document.getElementById("showval").innerHTML=distance(position.coords.latitude,position.coords.longitude,latitude,longitude,'K')+' Km';
     } 
 });
 };
@@ -88,21 +122,78 @@ function onError(error) {
           'message: ' + error.message + '\n');
 }
   
-function distance(lat1, lon1, lat2, lon2, unit) {
-	var radlat1 = Math.PI * lat1/180
-	var radlat2 = Math.PI * lat2/180
-	var radlon1 = Math.PI * lon1/180
-	var radlon2 = Math.PI * lon2/180
-	var theta = lon1-lon2
-	var radtheta = Math.PI * theta/180
-	var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-	dist = Math.acos(dist)
-	dist = dist * 180/Math.PI
-	dist = dist * 60 * 1.1515
-	if (unit=="K") { dist = dist * 1.609344 }
-	if (unit=="N") { dist = dist * 0.8684 }
-	return Math.round(dist)
-}    
+function calculateDistances(origin1,origin2,destinationA,destinationB) {
+  var service = new google.maps.DistanceMatrixService();
+  service.getDistanceMatrix(
+    {
+      origins: [origin1, origin2],
+      destinations: [destinationA, destinationB],
+      travelMode: google.maps.TravelMode.DRIVING,
+      unitSystem: google.maps.UnitSystem.METRIC,
+      avoidHighways: false,
+      avoidTolls: false
+    }, callback);
+}
+
+function callback(response, status) {
+  if (status != google.maps.DistanceMatrixStatus.OK) {
+    alert('Error was: ' + status);
+  } else {
+    var origins = response.originAddresses;
+    var destinations = response.destinationAddresses;
+    var outputDiv = document.getElementById('outputDiv');
+    outputDiv.innerHTML = '';
+   
+
+   // for (var i = 0; i < origins.length; i++) {
+      var results = response.rows[0].elements;
+     
+    //  for (var j = 0; j < results.length; j++) {
+       
+        outputDiv.innerHTML +=  'Distance: ' + results[0].distance.text + '<br>Duration: ' + results[0].duration.text + '<br>';
+	//navigator.notification.vibrate(500);
+
+navigator.notification.alert(
+    'Distance: ' + results[0].distance.text,  // message
+    alertDismissed,         // callback
+    'Distance',            // title
+    'Done'                  // buttonName
+);
+   //   }
+   // }
+  }
+}
+
+	function alertDismissed() {
+    // do something
+}
+function playAudio(src) {
+            // Create Media object from src
+            my_media = new Media(src, onSuccess, onError);
+
+            // Play audio
+            my_media.play();
+
+            // Update my_media position every second
+            if (mediaTimer == null) {
+                mediaTimer = setInterval(function() {
+                    // get my_media position
+                    my_media.getCurrentPosition(
+                        // success callback
+                        function(position) {
+                            if (position > -1) {
+                                setAudioPosition((position) + " sec");
+                            }
+                        },
+                        // error callback
+                        function(e) {
+                            console.log("Error getting pos=" + e);
+                            setAudioPosition("Error: " + e);
+                        }
+                    );
+                }, 1000);
+            }
+        }
 
         </script>
     </body>
