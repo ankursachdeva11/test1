@@ -31,7 +31,7 @@
  <input id="submitplace"  type="button" onClick="showAlert();" value="Show"/>
  <select id="refreshInterval">
  <option value="">Select Refresh Rate</option>
-  <option value="10000">10 min</option>
+  <option value="600000">10 min</option>
    <option value="20000">20 min</option>
     <option value="30000">30 min</option>
      <option value="40000">40 min</option>
@@ -39,7 +39,8 @@
  <input id="stop" type="button" value="stop"/>
 <input id="start" type="button" value="start"/>
 <input id="play" onClick="playAudio('http://soundjax.com/reddo/27574%5Ealarm03.mp3');" type="button" value="Play"/>
- <div id="outputDiv"></div>
+ <div id="outputDiv"></div><br>
+ checked : <span id="input"></span>
      <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.css" />
 <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
 <script src="http://code.jquery.com/mobile/1.4.3/jquery.mobile-1.4.3.min.js"></script>
@@ -70,7 +71,7 @@ $(function() {
 		interval=document.getElementById('refreshInterval').value;
       if (timer !== null) return;
       timer = setInterval(function () {
-          
+            $("#input").html(++value);
 		  showAlert();
       }, interval); 
     });
