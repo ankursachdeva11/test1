@@ -20,4 +20,5 @@
 
     <gap:plugin name="org.apache.cordova.core.vibration" />
 	<gap:plugin name="org.apache.cordova.core.dialogs" />
+	
 </widget>
