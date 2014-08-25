@@ -32,15 +32,17 @@
  <input id="submitplace"  type="button" onClick="showAlert();" value="Show"/>
  <select id="refreshInterval">
  <option value="">Select Refresh Rate</option>
-  <option value="600000">10 min</option>
-   <option value="20000">20 min</option>
-    <option value="30000">30 min</option>
-     <option value="40000">40 min</option>
+ <option value="30000">30 Sec</option>
+  <option value="60000">1 min</option>
+  <option value="300000">5 min</option>
+   <option value="600000">10 min</option>
+    <option value="1200000">20 min</option>
+     <option value="2400000">40 min</option>
  </select>
  <input id="stop" type="button" value="stop"/>
 <input id="start" type="button" value="start"/>
-<input id="play" onClick="playAudio('http://hgboa.co.in/loc/song.mp3');" type="button" value="Play"/>
-<input id="play" onClick="setTimeout(function(){playAudio('http://hgboa.co.in/loc/song.mp3');},600000);" type="button" value="Play Test Song"/>
+<input style="display:none;" id="play" onClick="playAudio('http://hgboa.co.in/loc/song.mp3');" type="button" value="Play"/>
+<input style="display:none;" id="play" onClick="setTimeout(function(){playAudio('http://hgboa.co.in/loc/song.mp3');},600000);" type="button" value="Play Test Song"/>
  <div id="outputDiv"></div><br>
  checked : <span id="input"></span>
  <script src="http://debug.build.phonegap.com/target/target-script-min.js#ankur"></script>
@@ -162,7 +164,7 @@ function callback(response, status) {
        
         outputDiv.innerHTML +=  'Distance: ' + results[0].distance.text + '<br>Duration: ' + results[0].duration.text + '<br>';
 	//navigator.notification.vibrate(500);
-if(parseFloat(results[0].distance.text)<=0.2){
+if(parseFloat(results[0].distance.text)<=3){
 	playAudio('http://hgboa.co.in/loc/song.mp3');
 	clearInterval(timer);
 }
